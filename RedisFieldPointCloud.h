@@ -12,6 +12,7 @@
 
 #include "constants.h"
 #include "RedisException.h"
+
 namespace bg = boost::geometry;
 namespace bgi = boost::geometry::index;
 
@@ -22,7 +23,7 @@ public:
     typedef bg::model::point<double, POINT_DIMENSIONS, bg::cs::cartesian> field_pt;
     typedef std::pair<field_pt, std::array<double, L>> field_pair;
 
-    typedef std::vector<field_pair> vec_fields;
+    typedef std::vector<field_pair, RedisAlloc<field_pair>> vec_fields;
     typedef bgi::rtree<field_pair, bgi::quadratic < 16 >> rtree_fields;
 
     static RedisFieldPointCloud* getPointCloud(RedisModuleCtx *ctx, RedisModuleString **argv, int argc, RedisModuleType *ptype)
@@ -38,7 +39,7 @@ public:
             throw RedisException(REDISMODULE_ERRORMSG_WRONGTYPE);
         else if (type == REDISMODULE_KEYTYPE_EMPTY)
         {
-            pcloud = new RedisFieldPointCloud();
+            pcloud = new RedisFieldPointCloud(); // Using RedisAlloc<T> is a bad time here
             RedisModule_ModuleTypeSetValue(key, ptype, pcloud);
         } else
         {
