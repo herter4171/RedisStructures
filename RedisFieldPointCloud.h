@@ -23,7 +23,7 @@ public:
     typedef bg::model::point<double, POINT_DIMENSIONS, bg::cs::cartesian> field_pt;
     typedef std::pair<field_pt, std::array<double, L>> field_pair;
 
-    typedef std::vector<field_pair, RedisAlloc<field_pair>> vec_fields;
+    typedef std::vector<field_pair> vec_fields;
     typedef bgi::rtree<field_pair, bgi::quadratic < 16 >> rtree_fields;
 
     static RedisFieldPointCloud* getPointCloud(RedisModuleCtx *ctx, RedisModuleString **argv, int argc, RedisModuleType *ptype)
