@@ -7,6 +7,7 @@
       <itemPath>RedisException.h</itemPath>
       <itemPath>RedisFieldPointCloud.h</itemPath>
       <itemPath>constants.h</itemPath>
+      <itemPath>redisalloc.h</itemPath>
       <itemPath>redismodule.h</itemPath>
       <itemPath>redisvector.h</itemPath>
     </logicalFolder>
@@ -50,6 +51,8 @@
       </item>
       <item path="constants.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="redisalloc.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="redismodule.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="redisvector.cpp" ex="false" tool="1" flavor2="0">
@@ -83,6 +86,8 @@
       <item path="RedisFieldPointCloud.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="constants.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="redisalloc.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="redismodule.h" ex="false" tool="3" flavor2="0">
       </item>

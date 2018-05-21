@@ -6,8 +6,8 @@
 class RedisException : public std::exception {
 public:
 
-    RedisException(char *_msg) : std::exception() {
-        msg = _msg;
+    RedisException(const char *_msg) : std::exception() {
+        msg = (char*) _msg;
     }
 
     virtual const char* what() const throw () override {
