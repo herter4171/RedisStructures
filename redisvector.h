@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef REDIS_VECTOR_H
 #define REDIS_VECTOR_H
 

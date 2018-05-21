@@ -1,5 +1,3 @@
-#pragma once
-
 #ifndef REDIS_ECEPTION_H
 #define REDIS_ECEPTION_H
 

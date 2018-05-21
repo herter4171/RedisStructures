@@ -1,4 +1,3 @@
-#pragma once
 #include <memory>
 #include <vector>
 #include <array>
@@ -128,6 +127,10 @@ private:
 
     field_pair getNearestField(field_pt pt) {
         vec_fields result;
+        
+        if (!pRtreeField)
+            setRtree();
+        
         pRtreeField->query(bgi::nearest(pt, 1), std::back_inserter(result));
 
         return result.front();
