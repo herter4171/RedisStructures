@@ -19,7 +19,7 @@
 
 /******************************************************************************
 REDIS VECTOR DEFS
-******************************************************************************/
+ ******************************************************************************/
 
 static RedisModuleType *RedisVector;
 
@@ -32,7 +32,7 @@ typedef RedisFieldPointCloud<SCALAR_FIELD_LENGTH> ScalarCloud;
 
 /******************************************************************************
 REDIS VECTOR FUNCTIONS
-******************************************************************************/
+ ******************************************************************************/
 
 
 point_bg parsePoint(RedisModuleCtx *ctx, RedisModuleString **argv, int argc);
@@ -42,7 +42,7 @@ std::array<double, 1> parseArray(RedisModuleCtx *ctx, RedisModuleString **argv, 
 
 /******************************************************************************
 REDIS MODULE COMMANDS
-******************************************************************************/
+ ******************************************************************************/
 
 int RedisVector_InsertCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int argc);
 
@@ -56,18 +56,19 @@ int RedisVector_SettreeCommand(RedisModuleCtx *ctx, RedisModuleString **argv, in
 
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif 
 
-	void RedisVector_Save(RedisModuleIO *rdb, void *value);
+    void RedisVector_Save(RedisModuleIO *rdb, void *value);
 
-	void* RedisVector_Load(RedisModuleIO *rdb, int encver);
+    void* RedisVector_Load(RedisModuleIO *rdb, int encver);
 
-	void RedisVector_Rewrite(RedisModuleIO *aof, RedisModuleString *key, void *value);
+    void RedisVector_Rewrite(RedisModuleIO *aof, RedisModuleString *key, void *value);
 
-	void RedisVector_Free(void *value);
+    void RedisVector_Free(void *value);
 
-	int RedisModule_OnLoad(RedisModuleCtx *ctx, RedisModuleString **argv, int argc);
+    int RedisModule_OnLoad(RedisModuleCtx *ctx, RedisModuleString **argv, int argc);
 
 #ifdef __cplusplus
 }

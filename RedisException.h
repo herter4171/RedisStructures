@@ -3,14 +3,17 @@
 
 #include <exception>
 
-class RedisException : public std::exception {
+class RedisException : public std::exception
+{
 public:
 
-    RedisException(const char *_msg) : std::exception() {
+    RedisException(const char *_msg) : std::exception()
+    {
         msg = (char*) _msg;
     }
 
-    virtual const char* what() const throw () override {
+    virtual const char* what() const throw () override
+    {
         return msg;
     }
 
