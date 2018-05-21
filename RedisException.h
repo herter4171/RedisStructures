@@ -5,21 +5,19 @@
 
 #include <exception>
 
-class RedisException : public std::exception
-{
+class RedisException : public std::exception {
 public:
-	RedisException(char *_msg) : std::exception()
-	{
-		msg = _msg;
-	}
 
-	virtual const char* what() const throw() override
-	{
-		return msg;
-	}
+    RedisException(char *_msg) : std::exception() {
+        msg = _msg;
+    }
+
+    virtual const char* what() const throw () override {
+        return msg;
+    }
 
 protected:
-	char *msg;
+    char *msg;
 };
 
 #endif
