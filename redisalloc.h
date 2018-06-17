@@ -35,7 +35,7 @@ struct RedisAlloc
         
         for (int i = 0; i < n; i++)
         {
-            RedisModule_Free(ptr + i*sizeof(T));
+            RedisModule_Free(ptr);
         }
     }
 };

@@ -15,6 +15,7 @@
 #include "redismodule.h"
 #include "RedisException.h"
 #include "RedisFieldPointCloud.h"
+#include "FieldPoint.h"
 #include "constants.h"
 
 /******************************************************************************
@@ -23,7 +24,7 @@ REDIS VECTOR DEFS
 
 static RedisModuleType *RedisVector;
 
-typedef bg::model::point<double, 3, bg::cs::cartesian> point_bg;
+typedef bg::model::point<double, POINT_DIMENSIONS, bg::cs::cartesian> point_bg;
 
 namespace bg = boost::geometry;
 namespace bgi = boost::geometry::index;

@@ -2,16 +2,19 @@
 #include <vector>
 #include <array>
 #include <sstream>
+#include <cstdlib>
 
 #include <boost/geometry/geometry.hpp>
 #include <boost/geometry/geometries/point.hpp>
 #include <boost/geometry/index/rtree.hpp>
+#include <boost/spirit/include/qi.hpp>
 
 #include "redisalloc.h"
 #include "redismodule.h"
 
 #include "constants.h"
 #include "RedisException.h"
+#include "FieldPoint.h"
 
 namespace bg = boost::geometry;
 namespace bgi = boost::geometry::index;
@@ -20,11 +23,12 @@ template<std::size_t L>
 class RedisFieldPointCloud
 {
 public:
-    typedef bg::model::point<double, POINT_DIMENSIONS, bg::cs::cartesian> field_pt;
-    typedef std::pair<field_pt, std::array<double, L>> field_pair;
+    typedef bg::model::point<double, 3, bg::cs::cartesian> point_bg;
+    
+    typedef bg::model::FieldPoint<double, POINT_DIMENSIONS, bg::cs::cartesian, std::array<double, L>> field_pt;
 
-    typedef std::vector<field_pair> vec_fields;
-    typedef bgi::rtree<field_pair, bgi::quadratic < 16 >> rtree_fields;
+    typedef std::vector<field_pt> vec_fields;
+    typedef bgi::rtree<field_pt, bgi::quadratic < 16 >> rtree_fields;
 
     static RedisFieldPointCloud* getPointCloud(RedisModuleCtx *ctx, RedisModuleString **argv, int argc, RedisModuleType *ptype)
     {
@@ -66,10 +70,7 @@ public:
 
     void insert(RedisModuleCtx *ctx, RedisModuleString **argv, const int argc)
     {
-        field_pt pt = parsePoint(ctx, argv, argc);
-        std::array<double, L> ary = parseDoubles<L>(ctx, argv, argc, argc - L);
-
-        pVecField->push_back(field_pair(pt, ary));
+        pVecField->push_back(parsePoint(ctx, argv, argc));
     }
 
     long long getSize()
@@ -77,19 +78,34 @@ public:
         return pVecField->size();
     }
 
-    void appendNearestStream(std::stringstream &stream, field_pt pt)
+    void appendNearestStream(std::stringstream &stream, point_bg pt)
     {
-        field_pair nearField = getNearestField(pt);
+        field_pt nearField = getNearestField(pt);
         appendFieldToStream(stream, nearField);
+    }
+    
+    void printNearest(RedisModuleCtx *ctx, point_bg pt)
+    {
+        field_pt nearField = getNearestField(pt);
+        
+        RedisModule_ReplyWithDouble(ctx, nearField.getStorage()[0]);
+    }
+    
+    std::stringstream getNearestPointString(point_bg pt)
+    {
+        std::stringstream stream;
+        appendNearestStream(stream, pt);
+        
+        return stream;        
     }
 
     std::stringstream getFieldDataStream()
     {
         std::stringstream stream;
 
-        for (const auto &pair : *pVecField)
+        for (auto &pt : *pVecField)
         {
-            appendFieldToStream(stream, pair);
+            appendFieldToStream(stream, pt);
         }
 
         return stream;
@@ -99,15 +115,13 @@ public:
     {
         uint64_t size = pVecField->size();
 
-        for (const auto &pair : *pVecField)
+        for (auto &pt : *pVecField)
         {
-            field_pt pt = pair.first;
+            RedisModule_SaveDouble(rdb, bg::get<0>(pt));
+            RedisModule_SaveDouble(rdb, bg::get<1>(pt));
+            RedisModule_SaveDouble(rdb, bg::get<2>(pt));
 
-            RedisModule_SaveDouble(rdb, pt.get<0>());
-            RedisModule_SaveDouble(rdb, pt.get<1>());
-            RedisModule_SaveDouble(rdb, pt.get<2>());
-
-            for (const auto &val : pair.second)
+            for (const auto &val : pt.getStorage())
             {
                 RedisModule_SaveDouble(rdb, val);
             }
@@ -121,31 +135,33 @@ public:
         for (int i = 0; i < size; i++)
         {
             std::array<double, POINT_DIMENSIONS + L> allAry;
+            
 
             for (auto &val : allAry)
             {
                 val = RedisModule_LoadDouble(rdb);
             }
+            
+            std::array<double, POINT_DIMENSIONS> coords;
+            std::array<double, L> storage;
+            
+            std::copy(allAry.begin(), allAry.begin() + POINT_DIMENSIONS, coords.begin());
+            std::copy(allAry.begin() + POINT_DIMENSIONS, allAry.end(), storage.begin());            
 
-            field_pt pt(allAry[0], allAry[1], allAry[2]);
-            std::array<double, L> fldAry;
-
-            int ind = 0;
-            for (auto it = allAry.begin() + POINT_DIMENSIONS; it != allAry.end(); ++it)
-            {
-                fldAry[ind] = *it;
-                ind++;
-            }
-
-            pVecField->push_back(std::make_pair(pt, fldAry));
+            pVecField->push_back(field_pt(coords, storage));
         }
+    }
+    
+    void clear()
+    {
+        pVecField->clear();
     }
 
 private:
     std::shared_ptr<vec_fields> pVecField;
     std::shared_ptr<rtree_fields> pRtreeField;
 
-    field_pair getNearestField(field_pt pt)
+    field_pt getNearestField(point_bg pt)
     {
         vec_fields result;
 
@@ -157,13 +173,13 @@ private:
         return result.front();
     }
 
-    void appendFieldToStream(std::stringstream &stream, const field_pair &pair)
+    void appendFieldToStream(std::stringstream &stream, field_pt &pt)
     {
-        stream << bg::wkt(pair.first) << " --> ";
-
-        for (int i = 0; i < L; i++)
+        stream << bg::wkt(pt) << " --> ";
+        
+        for (auto &val : pt.getStorage())
         {
-            stream << pair.second[i] << " ";
+            stream << val << " ";
         }
 
         stream << std::endl;
@@ -172,7 +188,9 @@ private:
     field_pt parsePoint(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
     {
         std::array<double, POINT_DIMENSIONS> valAry = parseDoubles<POINT_DIMENSIONS>(ctx, argv, argc, ARG_COUNT_MIN);
-        return field_pt(valAry[0], valAry[1], valAry[2]);
+        std::array<double, L> dataAry = parseDoubles<L>(ctx, argv, argc, argc - L);
+        
+        return field_pt(valAry, dataAry);
     }
 
     template<std::size_t Ary_Size>
@@ -180,6 +198,10 @@ private:
     {
         std::array<double, Ary_Size> valAry;
         int argInd = startInd;
+        
+        using boost::spirit::qi::double_;
+        using boost::spirit::qi::parse;
+        
 
         for (auto &val : valAry)
         {

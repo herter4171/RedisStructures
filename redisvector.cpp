@@ -82,7 +82,7 @@ int RedisVector_SizeCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int a
     return REDISMODULE_OK;
 }
 
-int RedisVecot_PrintCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
+int RedisVector_PrintCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
 {
     try
     {
@@ -90,6 +90,23 @@ int RedisVecot_PrintCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int a
         std::stringstream stream = pcloud->getFieldDataStream();
 
         RedisModule_ReplyWithSimpleString(ctx, stream.str().c_str());
+
+    } catch (RedisException exc)
+    {
+        return RedisModule_ReplyWithError(ctx, exc.what());
+    }
+
+    return REDISMODULE_OK;
+}
+
+int RedisVector_ClearCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
+{
+    try
+    {
+        ScalarCloud *pcloud = ScalarCloud::getPointCloud(ctx, argv, argc, RedisVector);
+        pcloud->clear();
+
+        RedisModule_ReplyWithNull(ctx);
 
     } catch (RedisException exc)
     {
@@ -112,10 +129,11 @@ int RedisVector_NearestCommand(RedisModuleCtx *ctx, RedisModuleString **argv, in
 
         ScalarCloud *pcloud = ScalarCloud::getPointCloud(ctx, argv, argc, RedisVector);
 
-        std::stringstream stream;
-        pcloud->appendNearestStream(stream, pt);
-
-        RedisModule_ReplyWithSimpleString(ctx, stream.str().c_str());
+        std::stringstream stream = pcloud->getNearestPointString(pt);
+        //RedisModule_ReplyWithSimpleString(ctx, stream.str().c_str());
+        //pcloud->appendNearestStream(stream, pt);
+        pcloud->printNearest(ctx, pt);
+        //RedisModule_ReplyWithSimpleString(ctx, stream.str().c_str());
     } catch (RedisException exc)
     {
         return RedisModule_ReplyWithError(ctx, exc.what());
@@ -215,7 +233,7 @@ int RedisModule_OnLoad(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
         }
 
         if (RedisModule_CreateCommand(ctx, "RedisVect.print",
-                RedisVecot_PrintCommand, "readonly", 1, 1, 1) == REDISMODULE_ERR)
+                RedisVector_PrintCommand, "readonly", 1, 1, 1) == REDISMODULE_ERR)
         {
             throw RedisException("Err couldn't create print command");
         }
@@ -230,6 +248,12 @@ int RedisModule_OnLoad(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
                 RedisVector_SettreeCommand, "readonly", 1, 1, 1) == REDISMODULE_ERR)
         {
             throw RedisException("Err couldn't create nearest command");
+        }
+        
+        if (RedisModule_CreateCommand(ctx, "RedisVect.clear",
+                RedisVector_ClearCommand, "write deny-oom", 1, 1, 1) == REDISMODULE_ERR)
+        {
+            throw RedisException("Err couldn't create clear command");
         }
     } catch (RedisException ex)
     {
