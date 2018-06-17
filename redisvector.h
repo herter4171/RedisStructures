@@ -6,6 +6,7 @@
 #include<string>
 #include<sstream>
 #include<array>
+#include<tuple>
 
 #include <boost/geometry/geometry.hpp>
 #include <boost/geometry/geometries/point.hpp>
@@ -30,6 +31,9 @@ namespace bg = boost::geometry;
 namespace bgi = boost::geometry::index;
 
 typedef RedisFieldPointCloud<SCALAR_FIELD_LENGTH> ScalarCloud;
+
+const char *cstr_redis_vect = "RedisVect";
+
 
 /******************************************************************************
 REDIS VECTOR FUNCTIONS

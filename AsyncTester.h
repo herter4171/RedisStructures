@@ -53,11 +53,11 @@ public:
     {
         event_count = 0;
         std::vector<std::array<double, 4>> *pWriteVec = getRandomValues<4>(num_points);
-        testWritePoints(pWriteVec); 
+        write(pWriteVec); 
 
         event_count = 0;
         std::vector<std::array<double, 3>> *pQueryVec = getRandomValues<3>(num_points);
-        testQueryPoints(pQueryVec);
+        query(pQueryVec);
     }
     
     std::string getResult()
@@ -107,7 +107,7 @@ public:
         return pRandVals;
     }
     
-    void testWritePoints(std::vector<std::array<double, 4>> *pValVec)
+    void write(std::vector<std::array<double, 4>> *pValVec)
     {
         msg_stream << "Begin test write for " << pValVec->size() << " points... ";
         bool valid;
@@ -145,7 +145,7 @@ public:
 
     }
     
-    void testQueryPoints(std::vector<std::array<double, 3>> *pValVec)
+    void query(std::vector<std::array<double, 3>> *pValVec)
     {
         msg_stream << "Begin test query for " << pValVec->size() << " points... ";
 

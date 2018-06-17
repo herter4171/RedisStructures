@@ -13,7 +13,7 @@ SOURCE: http://en.cppreference.com/w/cpp/named_req/Allocator
 template <class T>
 struct RedisAlloc
 {
-    typedef T value_type;
+    typedef T value_type; // Minimum for allocator type
     
     // Required for boost allocator.  Copied from new_allocator.hpp
     typedef T *                                  pointer;
@@ -33,7 +33,6 @@ struct RedisAlloc
         if (n > std::size_t(-1) / sizeof (T))
             throw std::bad_alloc();
 
-        //if (auto p = static_cast<T*> (std::malloc(n * sizeof (T))))
         if (auto p = static_cast<T*> (RedisModule_Alloc(n * sizeof (T))))
             return p;
 
@@ -42,7 +41,6 @@ struct RedisAlloc
 
     void deallocate(T* p, std::size_t) noexcept
     {
-        //std::free(p); 
         RedisModule_Free(p);
     }
     

@@ -7,6 +7,7 @@
       <itemPath>FieldPoint.h</itemPath>
       <itemPath>RedisException.h</itemPath>
       <itemPath>RedisFieldPointCloud.h</itemPath>
+      <itemPath>constants.h</itemPath>
       <itemPath>redisalloc.h</itemPath>
       <itemPath>redismodule.h</itemPath>
       <itemPath>redisvector.h</itemPath>
@@ -56,6 +57,8 @@
       <item path="RedisException.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="RedisFieldPointCloud.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="constants.h" ex="false" tool="3" flavor2="0">
       </item>
       <folder path="TestFiles/f1">
         <cTool>
@@ -118,6 +121,8 @@
       </item>
       <item path="RedisFieldPointCloud.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="constants.h" ex="false" tool="3" flavor2="0">
+      </item>
       <folder path="TestFiles/f1">
         <cTool>
           <incDir>
@@ -178,6 +183,8 @@
       <item path="RedisException.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="RedisFieldPointCloud.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="constants.h" ex="false" tool="3" flavor2="0">
       </item>
       <folder path="TestFiles/f1">
         <cTool>

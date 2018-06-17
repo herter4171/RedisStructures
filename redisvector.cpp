@@ -206,7 +206,7 @@ int RedisModule_OnLoad(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
 
     try
     {
-        if (RedisModule_Init(ctx, "RedisVect", 1, REDISMODULE_APIVER_1) == REDISMODULE_ERR)
+        if (RedisModule_Init(ctx, cstr_redis_vect, 1, REDISMODULE_APIVER_1) == REDISMODULE_ERR)
             throw RedisException("Err couldn't init module");
 
         RedisModuleTypeMethods tm;
@@ -216,7 +216,7 @@ int RedisModule_OnLoad(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
         tm.aof_rewrite = RedisVector_Rewrite;
         tm.free = RedisVector_Free;
 
-        RedisVector = RedisModule_CreateDataType(ctx, "RedisVect", 0, &tm);
+        RedisVector = RedisModule_CreateDataType(ctx, cstr_redis_vect, 0, &tm);
         if (RedisVector == NULL)
             throw RedisException("Err couldn't create datatype");
 
