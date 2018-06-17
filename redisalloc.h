@@ -14,6 +14,14 @@ template <class T>
 struct RedisAlloc
 {
     typedef T value_type;
+    
+    // Required for boost allocator.  Copied from new_allocator.hpp
+    typedef T *                                  pointer;
+    typedef const T *                            const_pointer;
+    typedef T &                                  reference;
+    typedef const T &                            const_reference;
+    typedef std::size_t                          size_type;
+    typedef std::ptrdiff_t                       difference_type;
 
     RedisAlloc() = default;
 
@@ -37,6 +45,13 @@ struct RedisAlloc
         //std::free(p); 
         RedisModule_Free(p);
     }
+    
+    // Required for boost allocator
+    template<class U>
+    struct rebind
+    {
+        typedef RedisAlloc<U> other;
+    };
 };
 
 template <class T, class U>
