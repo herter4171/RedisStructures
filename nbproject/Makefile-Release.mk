@@ -70,7 +70,7 @@ LDLIBSOPTIONS=
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libRedisStructures.${CND_DLIB_EXT}: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libRedisStructures.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} -shared -fPIC
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/libRedisStructures.${CND_DLIB_EXT} ${OBJECTFILES} ${LDLIBSOPTIONS} -lboost_thread -lboost_system -shared -fPIC
 
 ${OBJECTDIR}/redisvector.o: redisvector.cpp
 	${MKDIR} -p ${OBJECTDIR}

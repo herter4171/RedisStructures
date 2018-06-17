@@ -3,7 +3,12 @@
 #include <array>
 #include <sstream>
 #include <cstdlib>
+#include <atomic>
+#include <string>
+#include <unistd.h>
 
+#include <boost/thread/thread.hpp>
+#include <boost/lockfree/queue.hpp>
 #include <boost/geometry/geometry.hpp>
 #include <boost/geometry/geometries/point.hpp>
 #include <boost/geometry/index/rtree.hpp>
@@ -23,12 +28,13 @@ template<std::size_t L>
 class RedisFieldPointCloud
 {
 public:
-    typedef bg::model::point<double, 3, bg::cs::cartesian> point_bg;
+    typedef bg::model::point<double, POINT_DIMENSIONS, bg::cs::cartesian> point_bg;
     
     typedef bg::model::FieldPoint<double, POINT_DIMENSIONS, bg::cs::cartesian, std::array<double, L>> field_pt;
 
     typedef std::vector<field_pt, RedisAlloc<field_pt>> vec_fields;
     typedef bgi::rtree<field_pt, bgi::quadratic < 16 >, bgi::indexable<field_pt>, bgi::equal_to<field_pt>, RedisAlloc<field_pt>> rtree_fields;
+    typedef boost::lockfree::queue<std::string*> queue_redis_str;
 
     static RedisFieldPointCloud* getPointCloud(RedisModuleCtx *ctx, RedisModuleString **argv, int argc, RedisModuleType *ptype)
     {
@@ -60,17 +66,26 @@ public:
 
     RedisFieldPointCloud()
     {
-        pVecField = std::make_shared<vec_fields>();
+        pInsertThread = std::shared_ptr<boost::thread>(new boost::thread(boost::ref(ptParse)));
+        pVecField = ptParse.pVecField;
     }
 
     void setRtree()
     {
-        pRtreeField = std::make_shared<rtree_fields>(pVecField->begin(), pVecField->end());
+        ptParse.finished = true;
+        
+        while (!ptParse.pQueue->empty())
+        {
+            usleep(1000);
+        }
+        
+        pRtreeField = std::make_shared<rtree_fields>(ptParse.pVecField->begin(), ptParse.pVecField->end());
     }
 
     void insert(RedisModuleCtx *ctx, RedisModuleString **argv, const int argc)
     {
-        pVecField->push_back(parsePoint(ctx, argv, argc));
+        //pVecField->push_back(parsePoint(ctx, argv, argc));
+        ptParse.enqueue(ctx, argv, ARG_COUNT_MIN);
     }
 
     long long getSize()
@@ -159,8 +174,83 @@ public:
     }
 
 private:
+    struct PointStackParser
+    {
+        PointStackParser()
+        {
+            pQueue = std::make_shared<queue_redis_str>(0);
+            pVecField = std::make_shared<vec_fields>();
+            
+            finished = false;
+        }
+        
+        void enqueue(RedisModuleCtx *ctx, RedisModuleString **argv, int offset)
+        {
+            std::string *pStr = new std::string[L + POINT_DIMENSIONS];
+            
+            // Keep strings in memory
+            for (int i = 0; i < L + POINT_DIMENSIONS; i++)
+            {
+                std::size_t len;
+                const char *cstr = RedisModule_StringPtrLen(argv[i + offset], &len);
+                pStr[i] = std::string(cstr, len);
+            }
+            
+            pQueue->push(pStr);
+        }
+        
+        int operator()()
+        {
+            while(!finished || !pQueue->empty())
+            {
+                std::string *aryStr;
+                
+                if (pQueue->pop(aryStr))
+                {                   
+                    pVecField->push_back(parsePoint(aryStr));
+                }
+                else
+                {
+                    usleep(1000);
+                }
+                    
+            }
+        }
+        
+        field_pt parsePoint(std::string *aryStr)
+        {
+            std::array<double, POINT_DIMENSIONS> valAry;
+            std::array<double, L> dataAry;
+            
+            for (int i = 0; i < POINT_DIMENSIONS; i++)
+            {
+                valAry[i] = std::stod(aryStr[i]);
+            }
+            
+            for (int i = 0; i < L; i++)
+            {
+                dataAry[i] = std::stod(aryStr[i + POINT_DIMENSIONS]);
+            }
+            
+            //delete aryStr;
+
+            return field_pt(valAry, dataAry);
+        }
+        
+        std::shared_ptr<queue_redis_str> pQueue;
+        std::shared_ptr<vec_fields> pVecField;
+        
+        std::atomic_bool finished;
+    };
+    
+
+    
     std::shared_ptr<vec_fields> pVecField;
     std::shared_ptr<rtree_fields> pRtreeField;
+    std::shared_ptr<boost::thread> pInsertThread;
+    
+    PointStackParser ptParse;
+    
 
     field_pt getNearestField(point_bg pt)
     {

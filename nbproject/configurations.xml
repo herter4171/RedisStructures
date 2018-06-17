@@ -6,6 +6,7 @@
                    projectFiles="true">
       <itemPath>Deleter.h</itemPath>
       <itemPath>FieldPoint.h</itemPath>
+      <itemPath>PointStackParser.h</itemPath>
       <itemPath>RedisException.h</itemPath>
       <itemPath>RedisFieldPointCloud.h</itemPath>
       <itemPath>redisalloc.h</itemPath>
@@ -49,12 +50,17 @@
         <ccTool>
           <standard>8</standard>
         </ccTool>
+        <linkerTool>
+          <commandLine>-lboost_thread -lboost_system</commandLine>
+        </linkerTool>
       </compileType>
       <item path="AsyncTester.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Deleter.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="FieldPoint.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="PointStackParser.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="RedisException.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -112,12 +118,17 @@
         <asmTool>
           <developmentMode>5</developmentMode>
         </asmTool>
+        <linkerTool>
+          <commandLine>-lboost_thread -lboost_system</commandLine>
+        </linkerTool>
       </compileType>
       <item path="AsyncTester.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="Deleter.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="FieldPoint.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="PointStackParser.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="RedisException.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -181,6 +192,8 @@
       <item path="Deleter.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="FieldPoint.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="PointStackParser.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="RedisException.h" ex="false" tool="3" flavor2="0">
       </item>

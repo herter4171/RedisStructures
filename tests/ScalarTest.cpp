@@ -150,7 +150,7 @@ void testQueryPoints(std::vector<std::array<double, 3>> *pValVec)
 
 int main(int argc, char** argv)
 {
-    std::vector<double> counts = {1E2};
+    std::vector<double> counts = {1E6};
     
     for (auto count : counts)
     {
