@@ -86,13 +86,13 @@ ${OBJECTDIR}/redisvector.o: redisvector.cpp
 
 ${TESTDIR}/TestFiles/f1: ${TESTDIR}/tests/ScalarTest.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${TESTDIR}/TestFiles
-	${LINK.cc} -o ${TESTDIR}/TestFiles/f1 $^ ${LDLIBSOPTIONS} -lboost_timer -lhiredis -lboost_system -L./submodules/hiredis 
+	${LINK.cc} -o ${TESTDIR}/TestFiles/f1 $^ ${LDLIBSOPTIONS}  -lboost_timer -lboost_system -lhiredis -levent -lboost_thread -Lsubmodules/hiredis 
 
 
 ${TESTDIR}/tests/ScalarTest.o: tests/ScalarTest.cpp 
 	${MKDIR} -p ${TESTDIR}/tests
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -I. -I./submodules/hiredis -std=c++11 -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/ScalarTest.o tests/ScalarTest.cpp
+	$(COMPILE.cc) -O3 -I. -Isubmodules/hiredis -std=c++11 -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/ScalarTest.o tests/ScalarTest.cpp
 
 
 ${OBJECTDIR}/redisvector_nomain.o: ${OBJECTDIR}/redisvector.o redisvector.cpp 

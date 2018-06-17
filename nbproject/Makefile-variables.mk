@@ -22,6 +22,14 @@ CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux/libRedisStructures.so
 CND_PACKAGE_DIR_Release=dist/Release/GNU-Linux/package
 CND_PACKAGE_NAME_Release=libRedisStructures.so.tar
 CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux/package/libRedisStructures.so.tar
+# Test configuration
+CND_PLATFORM_Test=GNU-Linux
+CND_ARTIFACT_DIR_Test=dist/Test/GNU-Linux
+CND_ARTIFACT_NAME_Test=libRedisStructures.so
+CND_ARTIFACT_PATH_Test=dist/Test/GNU-Linux/libRedisStructures.so
+CND_PACKAGE_DIR_Test=dist/Test/GNU-Linux/package
+CND_PACKAGE_NAME_Test=libRedisStructures.so.tar
+CND_PACKAGE_PATH_Test=dist/Test/GNU-Linux/package/libRedisStructures.so.tar
 #
 # include compiler specific variables
 #

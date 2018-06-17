@@ -1,55 +1,54 @@
+/*
+SOURCE: http://en.cppreference.com/w/cpp/named_req/Allocator
+ */
+
 #ifndef REDISALLOC_H
 #define REDISALLOC_H
 
-// Source: https://stackoverflow.com/questions/21081796/why-not-to-inherit-from-stdallocator
-
-#include <algorithm>
 #include <cstdlib>
-#include <forward_list>
-#include <limits>
+#include <new>
 
 #include "redismodule.h"
-template <typename T>
+
+template <class T>
 struct RedisAlloc
 {
-    using value_type = T;
+    typedef T value_type;
+
     RedisAlloc() = default;
 
-    template <class U>
-    RedisAlloc(const RedisAlloc<U>&)
+    template <class U> constexpr RedisAlloc(const RedisAlloc<U>&) noexcept
     { }
 
     T* allocate(std::size_t n)
     {
-        T* ptrT;
-        if (n <= std::numeric_limits<std::size_t>::max() / sizeof (T))
-        {
-            ptrT = (T*) RedisModule_Alloc(n*sizeof(T));
-        }
-        
-        return ptrT;
+        if (n > std::size_t(-1) / sizeof (T))
+            throw std::bad_alloc();
+
+        //if (auto p = static_cast<T*> (std::malloc(n * sizeof (T))))
+        if (auto p = static_cast<T*> (RedisModule_Alloc(n * sizeof (T))))
+            return p;
+
+        throw std::bad_alloc();
     }
 
-    void deallocate(T* ptr, std::size_t n)
+    void deallocate(T* p, std::size_t) noexcept
     {
-        
-        for (int i = 0; i < n; i++)
-        {
-            RedisModule_Free(ptr);
-        }
+        //std::free(p); 
+        RedisModule_Free(p);
     }
 };
 
-template <typename T, typename U>
-inline bool operator==(const RedisAlloc<T>&, const RedisAlloc<U>&)
+template <class T, class U>
+bool operator==(const RedisAlloc<T>&, const RedisAlloc<U>&)
 {
     return true;
 }
 
-template <typename T, typename U>
-inline bool operator!=(const RedisAlloc<T>& a, const RedisAlloc<U>& b)
+template <class T, class U>
+bool operator!=(const RedisAlloc<T>&, const RedisAlloc<U>&)
 {
-    return !(a == b);
+    return false;
 }
 
-#endif
+#endif 

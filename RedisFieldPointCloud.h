@@ -27,7 +27,7 @@ public:
     
     typedef bg::model::FieldPoint<double, POINT_DIMENSIONS, bg::cs::cartesian, std::array<double, L>> field_pt;
 
-    typedef std::vector<field_pt> vec_fields;
+    typedef std::vector<field_pt, RedisAlloc<field_pt>> vec_fields;
     typedef bgi::rtree<field_pt, bgi::quadratic < 16 >> rtree_fields;
 
     static RedisFieldPointCloud* getPointCloud(RedisModuleCtx *ctx, RedisModuleString **argv, int argc, RedisModuleType *ptype)
@@ -155,6 +155,7 @@ public:
     void clear()
     {
         pVecField->clear();
+        pRtreeField->clear();
     }
 
 private:
@@ -165,10 +166,15 @@ private:
     {
         vec_fields result;
 
-        if (!pRtreeField)
+        if (!pRtreeField || pRtreeField->empty())
             setRtree();
 
         pRtreeField->query(bgi::nearest(pt, 1), std::back_inserter(result));
+        
+        if (result.empty())
+        {
+            throw RedisException("ERR empty result!  Have any points been added?");
+        }
 
         return result.front();
     }
