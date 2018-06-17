@@ -4,7 +4,6 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>Deleter.h</itemPath>
       <itemPath>FieldPoint.h</itemPath>
       <itemPath>RedisException.h</itemPath>
       <itemPath>RedisFieldPointCloud.h</itemPath>
@@ -51,8 +50,6 @@
         </ccTool>
       </compileType>
       <item path="AsyncTester.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Deleter.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="FieldPoint.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -115,8 +112,6 @@
       </compileType>
       <item path="AsyncTester.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Deleter.h" ex="false" tool="3" flavor2="0">
-      </item>
       <item path="FieldPoint.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="RedisException.h" ex="false" tool="3" flavor2="0">
@@ -177,8 +172,6 @@
         </asmTool>
       </compileType>
       <item path="AsyncTester.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="Deleter.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="FieldPoint.h" ex="false" tool="3" flavor2="0">
       </item>

@@ -114,6 +114,8 @@ public:
     void save(RedisModuleIO *rdb)
     {
         uint64_t size = pVecField->size();
+        RedisModule_SaveUnsigned(rdb, size);
+        
 
         for (auto &pt : *pVecField)
         {
