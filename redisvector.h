@@ -6,7 +6,9 @@
 #include<string>
 #include<sstream>
 #include<array>
+#include <algorithm>
 #include<tuple>
+#include <functional>
 
 #include <boost/geometry/geometry.hpp>
 #include <boost/geometry/geometries/point.hpp>
@@ -18,6 +20,8 @@
 #include "RedisFieldPointCloud.h"
 #include "FieldPoint.h"
 #include "constants.h"
+
+#include "Module/CommandBuilder.h"
 
 /******************************************************************************
 REDIS VECTOR DEFS
@@ -42,12 +46,32 @@ REDIS VECTOR FUNCTIONS
 
 point_bg parsePoint(RedisModuleCtx *ctx, RedisModuleString **argv, int argc);
 
-std::array<double, 1> parseArray(RedisModuleCtx *ctx, RedisModuleString **argv, int argc);
-
 
 /******************************************************************************
 REDIS MODULE COMMANDS
  ******************************************************************************/
+
+template<typename F>
+int RedisVector_BaseCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int argc, F &func)
+{
+    try
+    {
+        ScalarCloud *pcloud = ScalarCloud::getPointCloud(ctx, argv, argc, RedisVector);
+        func(ctx, argv, argc, pcloud);
+    } 
+    catch (RedisException exc)
+    {
+        return RedisModule_ReplyWithError(ctx, exc.what());
+    }
+
+    return REDISMODULE_OK;
+}
+
+template<typename F>
+struct RedisVector_BaseCommandStruct
+{
+    
+};
 
 int RedisVector_InsertCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int argc);
 
@@ -59,21 +83,24 @@ int RedisVector_NearestCommand(RedisModuleCtx *ctx, RedisModuleString **argv, in
 
 int RedisVector_SettreeCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int argc);
 
+/******************************************************************************
+REDIS SETUP
+ ******************************************************************************/
+
+RedisModuleTypeMethods RedisVector_MakeType(RedisModuleCtx *ctx);
+
+void RedisVector_SetCommands(RedisModuleCtx *ctx);
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif 
+    
+/******************************************************************************
+REDIS TYPE METHODS
+ ******************************************************************************/
 
-    void RedisVector_Save(RedisModuleIO *rdb, void *value);
-
-    void* RedisVector_Load(RedisModuleIO *rdb, int encver);
-
-    void RedisVector_Rewrite(RedisModuleIO *aof, RedisModuleString *key, void *value);
-
-    void RedisVector_Free(void *value);
-
-    int RedisModule_OnLoad(RedisModuleCtx *ctx, RedisModuleString **argv, int argc);
+int RedisModule_OnLoad(RedisModuleCtx *ctx, RedisModuleString **argv, int argc);
 
 #ifdef __cplusplus
 }

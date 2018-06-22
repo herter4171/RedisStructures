@@ -159,6 +159,22 @@ public:
         pVecField->clear();
         pRtreeField->clear();
     }
+    
+    template<std::size_t Ary_Size>
+    static std::array<double, Ary_Size> parseDoubles(RedisModuleCtx *ctx, RedisModuleString **argv, int argc, const int startInd)
+    {
+        std::array<double, Ary_Size> valAry;
+        int argInd = startInd;
+
+        for (auto &val : valAry)
+        {
+            if (RedisModule_StringToDouble(argv[argInd], &val) != REDISMODULE_OK)
+                throw RedisException("ERR invalid point double");
+            argInd++;
+        }
+
+        return valAry;
+    }
 
 private:
     std::shared_ptr<vec_fields> pVecField;
@@ -199,25 +215,5 @@ private:
         std::array<double, L> dataAry = parseDoubles<L>(ctx, argv, argc, argc - L);
         
         return field_pt(valAry, dataAry);
-    }
-
-    template<std::size_t Ary_Size>
-    std::array<double, Ary_Size> parseDoubles(RedisModuleCtx *ctx, RedisModuleString **argv, int argc, const int startInd)
-    {
-        std::array<double, Ary_Size> valAry;
-        int argInd = startInd;
-        
-        using boost::spirit::qi::double_;
-        using boost::spirit::qi::parse;
-        
-
-        for (auto &val : valAry)
-        {
-            if (RedisModule_StringToDouble(argv[argInd], &val) != REDISMODULE_OK)
-                throw RedisException("ERR invalid point double");
-            argInd++;
-        }
-
-        return valAry;
     }
 };

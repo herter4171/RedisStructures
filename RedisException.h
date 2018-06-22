@@ -2,6 +2,7 @@
 #define REDIS_ECEPTION_H
 
 #include <exception>
+#include <string>
 
 class RedisException : public std::exception
 {
@@ -11,6 +12,9 @@ public:
     {
         msg = (char*) _msg;
     }
+    
+    RedisException(std::string _msg) : RedisException(_msg.c_str())
+    { }
 
     virtual const char* what() const throw () override
     {
