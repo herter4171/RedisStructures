@@ -6,10 +6,12 @@
                    projectFiles="true">
       <logicalFolder name="f1" displayName="Module" projectFiles="true">
         <itemPath>Module/CommandBuilder.h</itemPath>
+        <itemPath>Module/ModuleBuilder.h</itemPath>
       </logicalFolder>
       <itemPath>FieldPoint.h</itemPath>
       <itemPath>RedisException.h</itemPath>
       <itemPath>RedisFieldPointCloud.h</itemPath>
+      <itemPath>RedisVec.h</itemPath>
       <itemPath>constants.h</itemPath>
       <itemPath>redisalloc.h</itemPath>
       <itemPath>redismodule.h</itemPath>
@@ -59,9 +61,13 @@
       </item>
       <item path="Module/CommandBuilder.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Module/ModuleBuilder.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="RedisException.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="RedisFieldPointCloud.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="RedisVec.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="constants.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -124,9 +130,13 @@
       </item>
       <item path="Module/CommandBuilder.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Module/ModuleBuilder.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="RedisException.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="RedisFieldPointCloud.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="RedisVec.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="constants.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -189,9 +199,13 @@
       </item>
       <item path="Module/CommandBuilder.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Module/ModuleBuilder.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="RedisException.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="RedisFieldPointCloud.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="RedisVec.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="constants.h" ex="false" tool="3" flavor2="0">
       </item>
