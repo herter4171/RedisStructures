@@ -9,8 +9,8 @@
 #include "AsyncTester.h"
 
 
-#define REDIS_SERVER_HOST "192.168.1.232"
-#define REDIS_SERVER_PORT 6379
+#define REDIS_SERVER_HOST "127.0.0.1"
+#define REDIS_SERVER_PORT 7000
 
 
 int main(int argc, char** argv)
@@ -19,7 +19,7 @@ int main(int argc, char** argv)
     
     for (auto count : counts)
     {
-        AsyncTester test1("TestKey1", REDIS_SERVER_HOST, REDIS_SERVER_PORT, count);
+        AsyncTester test1("TestKey2", REDIS_SERVER_HOST, REDIS_SERVER_PORT, count);
         //AsyncTester test2("TestKey2", REDIS_SERVER_HOST, REDIS_SERVER_PORT, count);
         
         boost::thread thread1(boost::ref(test1));

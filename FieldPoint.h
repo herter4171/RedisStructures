@@ -48,7 +48,7 @@
 #include <boost/geometry/core/coordinate_dimension.hpp>
 
 #include "redismodule.h"
-#include "Deleter.h"
+
 namespace boost { namespace geometry
 {
 

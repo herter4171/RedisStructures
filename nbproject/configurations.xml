@@ -28,6 +28,13 @@
                    displayName="Test Files"
                    projectFiles="false"
                    kind="TEST_LOGICAL_FOLDER">
+      <logicalFolder name="f2"
+                     displayName="test_cluster"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/AsyncClusterTester.h</itemPath>
+        <itemPath>tests/test_cluster.cpp</itemPath>
+      </logicalFolder>
       <logicalFolder name="f1" displayName="tests" projectFiles="true" kind="TEST">
         <itemPath>AsyncTester.h</itemPath>
         <itemPath>tests/ScalarTest.cpp</itemPath>
@@ -85,6 +92,27 @@
           <commandLine>-lboost_timer -lboost_system -lhiredis -levent -lboost_thread</commandLine>
         </linkerTool>
       </folder>
+      <folder path="TestFiles/f2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>submodules/hiredis</pElem>
+            <pElem>submodules/cpp-hiredis-cluster/include</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f2</output>
+          <linkerAddLib>
+            <pElem>submodules/hiredis</pElem>
+          </linkerAddLib>
+          <commandLine>-lboost_timer -lboost_system -lhiredis -levent -lboost_thread</commandLine>
+        </linkerTool>
+      </folder>
       <item path="redisalloc.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="redismodule.h" ex="false" tool="3" flavor2="0">
@@ -93,12 +121,16 @@
       </item>
       <item path="redisvector.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="tests/AsyncClusterTester.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="tests/ScalarTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/test_cluster.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
     <conf name="Release" type="2" platformSpecific="true">
       <toolsSet>
-        <compilerSet>default</compilerSet>
+        <compilerSet>GNU|GNU</compilerSet>
         <platform>2</platform>
         <dependencyChecking>true</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
@@ -147,6 +179,29 @@
           <linkerAddLib>
             <pElem>submodules/hiredis</pElem>
           </linkerAddLib>
+          <linkerDynSerch>
+            <pElem>submodules/hiredis</pElem>
+          </linkerDynSerch>
+          <commandLine>-lboost_timer -lboost_system -lhiredis -levent -lboost_thread</commandLine>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>submodules/hiredis</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f2</output>
+          <linkerAddLib>
+            <pElem>submodules/hiredis</pElem>
+          </linkerAddLib>
           <commandLine>-lboost_timer -lboost_system -lhiredis -levent -lboost_thread</commandLine>
         </linkerTool>
       </folder>
@@ -158,7 +213,11 @@
       </item>
       <item path="redisvector.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="tests/AsyncClusterTester.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="tests/ScalarTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/test_cluster.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
     <conf name="Test" type="2" platformSpecific="true">
@@ -218,6 +277,25 @@
           <commandLine>-lboost_timer -lboost_system -lhiredis -levent -lboost_thread</commandLine>
         </linkerTool>
       </folder>
+      <folder path="TestFiles/f2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+            <pElem>submodules/hiredis</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f2</output>
+          <linkerAddLib>
+            <pElem>submodules/hiredis</pElem>
+          </linkerAddLib>
+        </linkerTool>
+      </folder>
       <item path="redisalloc.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="redismodule.h" ex="false" tool="3" flavor2="0">
@@ -226,7 +304,11 @@
       </item>
       <item path="redisvector.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="tests/AsyncClusterTester.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="tests/ScalarTest.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="tests/test_cluster.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
   </confs>

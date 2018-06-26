@@ -37,7 +37,7 @@
     </conf>
     <conf name="Release" type="2" platformSpecific="true">
       <toolsSet>
-        <developmentServer>justin@192.168.1.232:22</developmentServer>
+        <developmentServer>ubuntu@ec2-52-15-165-233.us-east-2.compute.amazonaws.com:2122</developmentServer>
         <platform>2</platform>
       </toolsSet>
       <dbx_gdbdebugger version="1">

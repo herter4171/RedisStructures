@@ -1,3 +1,6 @@
 [submodule "submodules/hiredis"]
 	path = submodules/hiredis
 	url = https://github.com/redis/hiredis
+[submodule "submodules/cpp-hiredis-cluster"]
+	path = submodules/cpp-hiredis-cluster
+	url = https://github.com/shinberg/cpp-hiredis-cluster
