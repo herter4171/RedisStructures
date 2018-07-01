@@ -20,7 +20,7 @@
 class CommandBuilder
 {
 public:
-    CommandBuilder(std::string syntax_, bool readonly, const RedisModuleCmdFunc &func_):func(func_)
+    CommandBuilder(std::string syntax_, bool readonly, const RedisModuleCmdFunc func_):func(func_)
     {
         syntax = syntax_;
         
@@ -44,7 +44,7 @@ public:
     
 private:
     std::string syntax, flags;
-    const RedisModuleCmdFunc &func;
+    const RedisModuleCmdFunc func;
 };
 
 #endif /* COMMAND_H */

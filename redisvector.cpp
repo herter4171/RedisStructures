@@ -1,9 +1,12 @@
 #include "redisvector.h"
+#include "PointType.h"
+#include "SimpleVec.h"
 
 /******************************************************************************
 REDIS VECTOR DEFS
  ******************************************************************************/
 
+SimpleVec sv;
 
 
 point_bg parsePoint(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
@@ -182,13 +185,17 @@ int RedisModule_OnLoad(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
 
     try
     {
-        RedisModuleTypeMethods tm = RedisVector_MakeType(ctx);
+        /*RedisModuleTypeMethods tm = RedisVector_MakeType(ctx);
         RedisVector_SetCommands(ctx);   
         
         RedisVector = RedisModule_CreateDataType(ctx, cstr_redis_vect, 0, &tm);
         if (RedisVector == NULL)
             throw RedisException("Err couldn't create datatype");
         
+        status = PointType_SetType(ctx);
+        status = Vec_setType(ctx);*/
+        
+        sv.initialize(ctx);
     } 
     catch (RedisException ex)
     {

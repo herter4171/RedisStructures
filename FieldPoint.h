@@ -47,7 +47,15 @@
 #include <boost/geometry/core/coordinate_system.hpp>
 #include <boost/geometry/core/coordinate_dimension.hpp>
 
+#include "constants.h"
 #include "redismodule.h"
+#include "Module/ParseUtil.h"
+
+#include "Module/SaveUtil.h"
+#include "Module/LoadUtil.h"
+#include "Module/ParseUtil.h"
+
+
 
 namespace boost { namespace geometry
 {
@@ -67,7 +75,7 @@ template
     typename CoordinateType,
     std::size_t DimensionCount,
     typename CoordinateSystem,
-    typename Storage
+    std::size_t FieldLength
 >
 class FieldPoint
 {
@@ -78,17 +86,49 @@ private:
     enum { cs_check = sizeof(CoordinateSystem) };
 
 public:
-    typedef std::shared_ptr<CoordinateType> ary_ptr; 
+    typedef std::array<CoordinateType, DimensionCount> Dim_Ary;
+    typedef std::array<CoordinateType, FieldLength> Fld_Ary;
     
+    inline FieldPoint(){}
 
     /// @brief Constructor to set three values
-    inline FieldPoint(std::array<double, DimensionCount> &coords, Storage &storage)
+    inline FieldPoint(Dim_Ary &coords, Fld_Ary &storage)
     {
         m_values = coords;
         m_storage = storage;
     }
     
-    Storage getStorage()
+    static std::size_t ReqSize()
+    {
+        return ARG_COUNT_MIN + DimensionCount + FieldLength;
+    }
+    
+    static void save(RedisModuleIO *rdb, void* value)
+    {
+        FieldPoint *pPoint = (FieldPoint*) value;
+        
+        SaveUtil::save(rdb, pPoint->m_values);
+        SaveUtil::save(rdb, pPoint->m_storage);
+    }
+    
+    static void* load(RedisModuleIO *rdb, int encver)
+    {
+        
+        FieldPoint *pPoint = new FieldPoint();
+        
+        LoadUtil::load(rdb, pPoint->m_values);
+        LoadUtil::load(rdb, pPoint->m_storage);
+        
+        return pPoint;        
+    }
+    
+    static void parse(RedisModuleCtx *ctx, RedisModuleString **argv, int argc, FieldPoint *pPt)
+    {
+        ParseUtil::parse(pPt->m_values, argv, ARG_COUNT_MIN);
+        ParseUtil::parse(pPt->m_storage, argv, ARG_COUNT_MIN + DimensionCount);
+    }
+    
+    Fld_Ary getStorage()
     {
         return m_storage;
     }
@@ -115,8 +155,8 @@ public:
 
 private:
 
-    std::array<double, DimensionCount> m_values;
-    Storage m_storage;
+    Dim_Ary m_values;
+    Fld_Ary m_storage;
 };
 
 
@@ -131,9 +171,9 @@ template
     typename CoordinateType,
     std::size_t DimensionCount,
     typename CoordinateSystem,
-    typename Storage
+    std::size_t FieldLength
 >
-struct tag<model::FieldPoint<CoordinateType, DimensionCount, CoordinateSystem, Storage> >
+struct tag<model::FieldPoint<CoordinateType, DimensionCount, CoordinateSystem, FieldLength> >
 {
     typedef point_tag type;
 };
@@ -143,9 +183,9 @@ template
     typename CoordinateType,
     std::size_t DimensionCount,
     typename CoordinateSystem,
-    typename Storage
+    std::size_t FieldLength
 >
-struct coordinate_type<model::FieldPoint<CoordinateType, DimensionCount, CoordinateSystem, Storage> >
+struct coordinate_type<model::FieldPoint<CoordinateType, DimensionCount, CoordinateSystem, FieldLength> >
 {
     typedef CoordinateType type;
 };
@@ -155,9 +195,9 @@ template
     typename CoordinateType,
     std::size_t DimensionCount,
     typename CoordinateSystem,
-    typename Storage
+    std::size_t FieldLength
 >
-struct coordinate_system<model::FieldPoint<CoordinateType, DimensionCount, CoordinateSystem, Storage> >
+struct coordinate_system<model::FieldPoint<CoordinateType, DimensionCount, CoordinateSystem, FieldLength> >
 {
     typedef CoordinateSystem type;
 };
@@ -167,9 +207,9 @@ template
     typename CoordinateType,
     std::size_t DimensionCount,
     typename CoordinateSystem,
-    typename Storage
+    std::size_t FieldLength
 >
-struct dimension<model::FieldPoint<CoordinateType, DimensionCount, CoordinateSystem, Storage> >
+struct dimension<model::FieldPoint<CoordinateType, DimensionCount, CoordinateSystem, FieldLength> >
     : boost::mpl::int_<DimensionCount>
 {};
 
@@ -178,19 +218,19 @@ template
     typename CoordinateType,
     std::size_t DimensionCount,
     typename CoordinateSystem,
-    typename Storage,
+    std::size_t FieldLength,
     std::size_t Dimension
 >
-struct access<model::FieldPoint<CoordinateType, DimensionCount, CoordinateSystem, Storage>, Dimension>
+struct access<model::FieldPoint<CoordinateType, DimensionCount, CoordinateSystem, FieldLength>, Dimension>
 {
     static inline CoordinateType get(
-        model::FieldPoint<CoordinateType, DimensionCount, CoordinateSystem, Storage> const& p)
+        model::FieldPoint<CoordinateType, DimensionCount, CoordinateSystem, FieldLength> const& p)
     {
         return p.template get<Dimension>();
     }
 
     static inline void set(
-        model::FieldPoint<CoordinateType, DimensionCount, CoordinateSystem, Storage>& p,
+        model::FieldPoint<CoordinateType, DimensionCount, CoordinateSystem, FieldLength>& p,
         CoordinateType const& value)
     {
         p.template set<Dimension>(value);

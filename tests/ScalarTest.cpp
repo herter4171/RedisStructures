@@ -10,12 +10,12 @@
 
 
 #define REDIS_SERVER_HOST "127.0.0.1"
-#define REDIS_SERVER_PORT 7000
+#define REDIS_SERVER_PORT 6379
 
 
 int main(int argc, char** argv)
 {
-    std::vector<double> counts = {1E6};
+    std::vector<double> counts = {1E2};
     
     for (auto count : counts)
     {

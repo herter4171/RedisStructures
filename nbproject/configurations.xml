@@ -5,11 +5,20 @@
                    displayName="Header Files"
                    projectFiles="true">
       <logicalFolder name="f1" displayName="Module" projectFiles="true">
+        <itemPath>Module/ArgUtil.h</itemPath>
+        <itemPath>Module/BaseModule.h</itemPath>
         <itemPath>Module/CommandBuilder.h</itemPath>
+        <itemPath>Module/KeyValUtil.h</itemPath>
+        <itemPath>Module/LoadUtil.h</itemPath>
+        <itemPath>Module/ParseUtil.h</itemPath>
+        <itemPath>Module/SaveUtil.h</itemPath>
+        <itemPath>Module/TypeSetup.h</itemPath>
       </logicalFolder>
       <itemPath>FieldPoint.h</itemPath>
+      <itemPath>PointType.h</itemPath>
       <itemPath>RedisException.h</itemPath>
       <itemPath>RedisFieldPointCloud.h</itemPath>
+      <itemPath>SimpleVec.h</itemPath>
       <itemPath>constants.h</itemPath>
       <itemPath>redisalloc.h</itemPath>
       <itemPath>redismodule.h</itemPath>
@@ -64,11 +73,29 @@
       </item>
       <item path="FieldPoint.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Module/ArgUtil.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Module/BaseModule.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Module/CommandBuilder.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Module/KeyValUtil.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Module/LoadUtil.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Module/ParseUtil.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Module/SaveUtil.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Module/TypeSetup.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="PointType.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="RedisException.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="RedisFieldPointCloud.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SimpleVec.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="constants.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -154,11 +181,29 @@
       </item>
       <item path="FieldPoint.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Module/ArgUtil.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Module/BaseModule.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Module/CommandBuilder.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Module/KeyValUtil.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Module/LoadUtil.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Module/ParseUtil.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Module/SaveUtil.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Module/TypeSetup.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="PointType.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="RedisException.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="RedisFieldPointCloud.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SimpleVec.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="constants.h" ex="false" tool="3" flavor2="0">
       </item>
@@ -246,11 +291,29 @@
       </item>
       <item path="FieldPoint.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="Module/ArgUtil.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Module/BaseModule.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="Module/CommandBuilder.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Module/KeyValUtil.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Module/LoadUtil.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Module/ParseUtil.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Module/SaveUtil.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Module/TypeSetup.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="PointType.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="RedisException.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="RedisFieldPointCloud.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="SimpleVec.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="constants.h" ex="false" tool="3" flavor2="0">
       </item>
