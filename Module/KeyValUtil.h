@@ -17,6 +17,7 @@
 #include <functional>
 #include <string>
 
+#include "../RedisException.h"
 #include "../redismodule.h"
 #include "../constants.h"
 
@@ -26,44 +27,52 @@ namespace KeyValUtil
     using UserKey_CB = std::function<void(RedisModuleCtx*, RedisModuleString**, int, T*)>;    
     
         
-    template<std::size_t ReqArgCt>//, int OpenFlags>
+        
+    template<int ReqArgCt>
     RedisModuleKey* fetchKey(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
     {
         // Check argument count
-        if (argc != ReqArgCt)
-        {
-            std::string msg = "ERR wrong number of arguments (";
-            msg += std::to_string(argc);
-            msg += ")!";
-            
-            throw RedisException(msg);
-        }
+        if (ReqArgCt != argc){ throw RedisException(argc_err_msg); }
 
         // Get key ptr
         return (RedisModuleKey*) RedisModule_OpenKey(ctx, argv[ARG_KEY_IND], REDISMODULE_READ | REDISMODULE_WRITE);
+    }
+    
+    template<int ReqArgCt = ARG_COUNT_MIN>
+    int deleteKey(RedisModuleCtx *ctx, RedisModuleString **argv, int argc, RedisModuleType* redisType)
+    {
+        try
+        {
+            RedisModuleKey* key = fetchKey<ReqArgCt>(ctx, argv, argc);
+            const char *msg = nullptr;
+            
+            if (RedisModule_KeyType(key) == REDISMODULE_KEYTYPE_EMPTY)
+                throw RedisException("Err key already empty");
+            
+            if (RedisModule_ModuleTypeGetType(key) != redisType)
+                throw RedisException("Err key is of wrong module type");
+            
+            if (RedisModule_DeleteKey(key) != REDISMODULE_OK)
+                throw RedisException("Err key not open for writing");
+            
+            RedisModule_ReplyWithNull(ctx);            
+        }
+        catch(RedisException ex)
+        {
+            RedisModule_ReplyWithSimpleString(ctx, ex.what());
+        }
+        
+        return REDISMODULE_OK;
     }   
-    
-    /*template<std::size_t ReqArgCt>
-    RedisModuleKey* fetchKey(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
-    {
-        return fetchKey<ReqArgCt, REDISMODULE_READ | REDISMODULE_WRITE>(ctx, argv, argc);
-    }*/
-    
-    /*template<>
-    RedisModuleKey* fetchKey(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
-    {
-        return fetchKey<ARG_COUNT_MIN, REDISMODULE_READ>(ctx, argv, argc);
-    }*/
-    
-    template<typename T, std::size_t ReqArgCt>
+
+    template<typename T, int ReqArgCt>
     T* fetchValue(RedisModuleCtx *ctx, RedisModuleString **argv, int argc, RedisModuleType *redisType)
     {
         RedisModuleKey *key = fetchKey<ReqArgCt>(ctx, argv, argc);
-        int type = RedisModule_KeyType(key);            
         
         T* refT;
 
-        if (type == REDISMODULE_KEYTYPE_EMPTY)
+        if (RedisModule_KeyType(key) == REDISMODULE_KEYTYPE_EMPTY)
         {
             refT = new T();
             RedisModule_ModuleTypeSetValue(key, redisType, refT);
@@ -82,7 +91,7 @@ namespace KeyValUtil
         return refT;
     }
     
-    template<typename T, std::size_t ReqArgCt>
+    template<typename T, int ReqArgCt>
     int runCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int argc, RedisModuleType* redisType,  UserKey_CB<T> func)
     {
         try
@@ -96,7 +105,7 @@ namespace KeyValUtil
         }
 
         return REDISMODULE_OK;
-    }
+    }    
 }
 
 

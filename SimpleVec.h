@@ -33,17 +33,12 @@
 typedef std::vector<double> VecTyp;
 RedisModuleType *SimpleVecModType;
 
-
-
-
 class SimpleVec: public BaseModule<VecTyp>
 {
     public:
         
-        SimpleVec():BaseModule("SimpleVec")
-        {
-            modType = SimpleVecModType;
-        }
+        SimpleVec():BaseModule(SimpleVecModType, "SimpleVec")
+        { }
         
         virtual std::map<std::string, RedisModuleCmdFunc> getCommands()
         {            

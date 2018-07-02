@@ -11,4 +11,6 @@ const std::size_t POINT_DIMENSIONS = 3; // 3D points
 const std::size_t POINT_QUERY_LENGTH = ARG_COUNT_MIN + POINT_DIMENSIONS;
 
 const std::size_t SCALAR_FIELD_LENGTH = 1;
+
+const char *argc_err_msg = "Err wrong number of arguments";
 #endif

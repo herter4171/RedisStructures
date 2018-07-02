@@ -28,23 +28,34 @@ template<typename DataType>
 class BaseModule
 {
     public:
-        BaseModule(std::string name_): name(name_)
-        { }
+        
+        // Module type needs use in static context.  Should be at top of hdr for each used subtype
+        BaseModule(RedisModuleType* modType_, std::string name_)
+        {
+            modType = modType_;
+            name = name_;
+        }
     
         void initialize(RedisModuleCtx *ctx)
         {
-            RedisModuleTypeMethods tm = setMethods(ctx);
-            
-            for (auto &pair : getCommands())
+            try
             {
-                std::string syntax = boost::algorithm::join(std::vector<std::string>({name, pair.first}), ".");
-                TypeSetup::setCommand(ctx, pair.second, syntax);
+                RedisModuleTypeMethods tm = setMethods(ctx);
+
+                for (auto &pair : getCommands())
+                {
+                    std::string syntax = boost::algorithm::join(std::vector<std::string>({name, pair.first}), ".");
+                    TypeSetup::setCommand(ctx, pair.second, syntax);
+                }
+
+                modType = RedisModule_CreateDataType(ctx, name.c_str(), 0, &tm);
+                if (modType == NULL)
+                    throw RedisException("Err couldn't create datatype");
             }
-            
-            modType = RedisModule_CreateDataType(ctx, name.c_str(), 0, &tm);
-            if (modType == NULL)
-                throw RedisException("Err couldn't create datatype");
-            
+            catch(RedisException ex)
+            {
+                RedisModule_ReplyWithError(ctx, ex.what());
+            }
         }
         
         virtual RedisModuleTypeMethods setMethods(RedisModuleCtx *ctx)

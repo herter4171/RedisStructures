@@ -3,6 +3,11 @@
 
 #include <exception>
 #include <string>
+#include <type_traits>
+#include <functional>
+
+#include "redismodule.h"
+
 
 class RedisException : public std::exception
 {

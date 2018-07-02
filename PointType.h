@@ -41,12 +41,10 @@
 typedef bg::model::FieldPoint<double, POINT_DIMENSIONS, bg::cs::cartesian, SCALAR_FIELD_LENGTH> pt_type;
 static RedisModuleType *PointModType;
 
-using pt_cb = KeyValUtil::UserKey_CB<pt_type>;
-
 class PointType: public BaseModule<pt_type>
 {
 public:
-    PointType(): BaseModule("PointType") { }
+    PointType(): BaseModule(PointModType, "PointType") { }
     
     virtual RedisModuleTypeMethods setMethods(RedisModuleCtx *ctx) override
     {

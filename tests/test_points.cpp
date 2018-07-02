@@ -22,7 +22,7 @@
 int main(int argc, char** argv)
 {
     
-    std::vector<double> counts = {1E6};
+    std::vector<double> counts = {1E2};
     
     for (auto count : counts)
     {

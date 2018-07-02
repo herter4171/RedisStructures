@@ -10,30 +10,6 @@ SimpleVec sv;
 PointType ptMod;
 
 
-point_bg parsePoint(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
-{
-    point_bg pt;
-
-    double coord;
-
-    if (RedisModule_StringToDouble(argv[2], &coord) != REDISMODULE_OK)
-        throw RedisException("ERR invalid value: must be integer");
-
-    pt.set<0>(coord);
-
-    if (RedisModule_StringToDouble(argv[3], &coord) != REDISMODULE_OK)
-        throw RedisException("ERR invalid value: must be integer");
-
-    pt.set<1>(coord);
-
-    if (RedisModule_StringToDouble(argv[4], &coord) != REDISMODULE_OK)
-        throw RedisException("ERR invalid value: must be integer");
-
-    pt.set<2>(coord);
-
-    return pt;
-}
-
 /******************************************************************************
 REDIS MODULE COMMANDS
  ******************************************************************************/
@@ -93,7 +69,9 @@ int RedisVector_NearestCommand(RedisModuleCtx *ctx, RedisModuleString **argv, in
         if (argc != POINT_QUERY_LENGTH)
             throw RedisException("ERR wrong number of arguments for point query");
         
-        point_bg pt = parsePoint(ctx, argv, argc);
+        point_bg pt;
+        
+        parsePoint<POINT_DIMENSIONS - 1>(argv, pt);
         pcloud->printNearest(ctx, pt);
         
     };
@@ -186,23 +164,23 @@ int RedisModule_OnLoad(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
 
     try
     {
-        /*RedisModuleTypeMethods tm = RedisVector_MakeType(ctx);
+        RedisModuleTypeMethods tm = RedisVector_MakeType(ctx);
         RedisVector_SetCommands(ctx);   
         
         RedisVector = RedisModule_CreateDataType(ctx, cstr_redis_vect, 0, &tm);
         if (RedisVector == NULL)
             throw RedisException("Err couldn't create datatype");
         
-        status = PointType_SetType(ctx);
-        status = Vec_setType(ctx);*/
-        
-        //sv.initialize(ctx);
-        ptMod.initialize(ctx);
+                
+
     } 
     catch (RedisException ex)
     {
         RedisModule_ReplyWithError(ctx, ex.what());
     }
+    
+    sv.initialize(ctx);
+    ptMod.initialize(ctx);
 
     return status;
 }

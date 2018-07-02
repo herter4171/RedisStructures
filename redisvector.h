@@ -22,6 +22,7 @@
 #include "constants.h"
 
 #include "Module/CommandBuilder.h"
+#include "Module/ParseUtil.h"
 
 /******************************************************************************
 REDIS VECTOR DEFS
@@ -43,8 +44,19 @@ const char *cstr_redis_vect = "RedisVect";
 REDIS VECTOR FUNCTIONS
  ******************************************************************************/
 
+template<int I>
+void parsePoint(RedisModuleString **argv, point_bg &pt)
+{
+    double coord;
+    if (RedisModule_StringToDouble(argv[I + ARG_COUNT_MIN], &coord) != REDISMODULE_OK)
+        throw RedisException("ERR invalid value: must be integer");
+    
+    pt.set<I>(coord);
+    parsePoint<I - 1>(argv, pt);
+}
 
-point_bg parsePoint(RedisModuleCtx *ctx, RedisModuleString **argv, int argc);
+template<>
+void parsePoint<ARG_KEY_IND>(RedisModuleString **argv, point_bg &pt){ }
 
 
 /******************************************************************************
