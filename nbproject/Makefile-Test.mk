@@ -42,13 +42,13 @@ TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
 
 # Test Files
 TESTFILES= \
-	${TESTDIR}/TestFiles/f2 \
+	${TESTDIR}/TestFiles/f3 \
 	${TESTDIR}/TestFiles/f1
 
 # Test Object Files
 TESTOBJECTFILES= \
 	${TESTDIR}/tests/ScalarTest.o \
-	${TESTDIR}/tests/test_cluster.o
+	${TESTDIR}/tests/test_points.o
 
 # C Compiler Flags
 CFLAGS=
@@ -86,19 +86,19 @@ ${OBJECTDIR}/redisvector.o: redisvector.cpp
 .build-tests-conf: .build-tests-subprojects .build-conf ${TESTFILES}
 .build-tests-subprojects:
 
-${TESTDIR}/TestFiles/f2: ${TESTDIR}/tests/test_cluster.o ${OBJECTFILES:%.o=%_nomain.o}
+${TESTDIR}/TestFiles/f3: ${TESTDIR}/tests/test_points.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${TESTDIR}/TestFiles
-	${LINK.cc} -o ${TESTDIR}/TestFiles/f2 $^ ${LDLIBSOPTIONS}   -Lsubmodules/hiredis 
+	${LINK.cc} -o ${TESTDIR}/TestFiles/f3 $^ ${LDLIBSOPTIONS}  -lboost_timer -lboost_system -lhiredis -levent -lboost_thread -Lsubmodules/hiredis -Wl,-rpath,'submodules/hiredis' 
 
 ${TESTDIR}/TestFiles/f1: ${TESTDIR}/tests/ScalarTest.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc} -o ${TESTDIR}/TestFiles/f1 $^ ${LDLIBSOPTIONS}  -lboost_timer -lboost_system -lhiredis -levent -lboost_thread -Lsubmodules/hiredis -Wl,-rpath,'/usr/local/lib' 
 
 
-${TESTDIR}/tests/test_cluster.o: tests/test_cluster.cpp 
+${TESTDIR}/tests/test_points.o: tests/test_points.cpp 
 	${MKDIR} -p ${TESTDIR}/tests
 	${RM} "$@.d"
-	$(COMPILE.cc) -O3 -I. -Isubmodules/hiredis -std=c++11 -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/test_cluster.o tests/test_cluster.cpp
+	$(COMPILE.cc) -O3 -I. -Isubmodules/hiredis -std=c++11 -MMD -MP -MF "$@.d" -o ${TESTDIR}/tests/test_points.o tests/test_points.cpp
 
 
 ${TESTDIR}/tests/ScalarTest.o: tests/ScalarTest.cpp 
@@ -124,7 +124,7 @@ ${OBJECTDIR}/redisvector_nomain.o: ${OBJECTDIR}/redisvector.o redisvector.cpp
 .test-conf:
 	@if [ "${TEST}" = "" ]; \
 	then  \
-	    ${TESTDIR}/TestFiles/f2 || true; \
+	    ${TESTDIR}/TestFiles/f3 || true; \
 	    ${TESTDIR}/TestFiles/f1 || true; \
 	else  \
 	    ./${TEST} || true; \

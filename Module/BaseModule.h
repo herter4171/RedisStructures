@@ -29,13 +29,11 @@ class BaseModule
 {
     public:
         BaseModule(std::string name_): name(name_)
-        {
-            
-        }
+        { }
     
         void initialize(RedisModuleCtx *ctx)
         {
-            RedisModuleTypeMethods tm = TypeSetup::setMethods<DataType>(ctx, name.c_str());
+            RedisModuleTypeMethods tm = setMethods(ctx);
             
             for (auto &pair : getCommands())
             {
@@ -47,6 +45,11 @@ class BaseModule
             if (modType == NULL)
                 throw RedisException("Err couldn't create datatype");
             
+        }
+        
+        virtual RedisModuleTypeMethods setMethods(RedisModuleCtx *ctx)
+        {
+            TypeSetup::setMethods<DataType>(ctx, name.c_str());
         }
         
         virtual std::map<std::string, RedisModuleCmdFunc> getCommands()=0;

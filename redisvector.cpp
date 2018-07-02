@@ -7,6 +7,7 @@ REDIS VECTOR DEFS
  ******************************************************************************/
 
 SimpleVec sv;
+PointType ptMod;
 
 
 point_bg parsePoint(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
@@ -195,7 +196,8 @@ int RedisModule_OnLoad(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
         status = PointType_SetType(ctx);
         status = Vec_setType(ctx);*/
         
-        sv.initialize(ctx);
+        //sv.initialize(ctx);
+        ptMod.initialize(ctx);
     } 
     catch (RedisException ex)
     {

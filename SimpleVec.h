@@ -27,32 +27,35 @@
 #include "Module/ParseUtil.h"
 #include "Module/TypeSetup.h"
 #include "Module/CommandBuilder.h"
-#include "Module/ArgUtil.h"
 #include "Module/BaseModule.h"
 
 
 typedef std::vector<double> VecTyp;
 RedisModuleType *SimpleVecModType;
 
+
+
+
 class SimpleVec: public BaseModule<VecTyp>
 {
     public:
+        
         SimpleVec():BaseModule("SimpleVec")
         {
             modType = SimpleVecModType;
         }
         
         virtual std::map<std::string, RedisModuleCmdFunc> getCommands()
-        {
+        {            
             std::map<std::string, RedisModuleCmdFunc> map_cmd = {
-                {"push", push_cmd},
+                {"push", SimpleVec::push_cmd},
                 {"print", SimpleVec::print_cmd}
             };
             
             return map_cmd;
         }
         
-        int push_cmd(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
+        static int push_cmd(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
         {
             auto push = [](RedisModuleCtx *ctx, RedisModuleString **argv, int argc, VecTyp *pVec)
             {
@@ -62,9 +65,8 @@ class SimpleVec: public BaseModule<VecTyp>
 
                 RedisModule_ReplyWithNull(ctx);
             };
-            
-            KeyValUtil::runCommand<VecTyp, ARG_COUNT_MIN + 1>(ctx, argv, argc, SimpleVecModType, push);
-            return REDISMODULE_OK;
+
+            return KeyValUtil::runCommand<VecTyp, ARG_COUNT_MIN + 1>(ctx, argv, argc, SimpleVecModType, push);
         }
         
         static int print_cmd(RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
@@ -81,8 +83,7 @@ class SimpleVec: public BaseModule<VecTyp>
                 RedisModule_ReplyWithSimpleString(ctx, stream.str().c_str());          
             };
             
-            KeyValUtil::runCommand<VecTyp, ARG_COUNT_MIN>(ctx, argv, argc, SimpleVecModType, print);
-            return REDISMODULE_OK;
+            return KeyValUtil::runCommand<VecTyp, ARG_COUNT_MIN>(ctx, argv, argc, SimpleVecModType, print);
         }
         
     private:

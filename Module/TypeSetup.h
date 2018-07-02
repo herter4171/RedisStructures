@@ -52,7 +52,9 @@ namespace TypeSetup
         tm.free = [](void *value)
         {
             T* refT = (T*) value;
-            delete refT;
+            
+            if (refT)
+                delete refT;
         };
     }
     

@@ -39,6 +39,10 @@
 #include <memory>
 #include <array>
 #include <utility>
+#include <iostream>  
+#include <iterator>
+#include <algorithm>
+
 #include <boost/mpl/int.hpp>
 #include <boost/static_assert.hpp>
 
@@ -98,7 +102,7 @@ public:
         m_storage = storage;
     }
     
-    static std::size_t ReqSize()
+    constexpr static std::size_t ReqSize()
     {
         return ARG_COUNT_MIN + DimensionCount + FieldLength;
     }
@@ -122,6 +126,17 @@ public:
         return pPoint;        
     }
     
+    std::stringstream& operator<<(std::stringstream& ofs)
+    {
+        auto iter_out = std::ostream_iterator<CoordinateType>(ofs, " ");
+        std::copy(m_values.begin(), m_values.end(), iter_out);
+        
+        ofs << " --> ";
+        
+        std::copy(m_storage.begin(), m_storage.end(), iter_out);
+        return ofs;
+    }
+    
     static void parse(RedisModuleCtx *ctx, RedisModuleString **argv, int argc, FieldPoint *pPt)
     {
         ParseUtil::parse(pPt->m_values, argv, ARG_COUNT_MIN);
@@ -132,6 +147,7 @@ public:
     {
         return m_storage;
     }
+    
 
     /// @brief Get a coordinate
     /// @tparam K coordinate to get

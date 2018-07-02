@@ -15,6 +15,8 @@
 #define KEYVALUTIL_H
 
 #include <functional>
+#include <string>
+
 #include "../redismodule.h"
 #include "../constants.h"
 
@@ -29,7 +31,13 @@ namespace KeyValUtil
     {
         // Check argument count
         if (argc != ReqArgCt)
-            throw RedisException("ERR wrong number of arguments!");
+        {
+            std::string msg = "ERR wrong number of arguments (";
+            msg += std::to_string(argc);
+            msg += ")!";
+            
+            throw RedisException(msg);
+        }
 
         // Get key ptr
         return (RedisModuleKey*) RedisModule_OpenKey(ctx, argv[ARG_KEY_IND], REDISMODULE_READ | REDISMODULE_WRITE);
@@ -69,6 +77,8 @@ namespace KeyValUtil
             throw RedisException(REDISMODULE_ERRORMSG_WRONGTYPE);
         }
         
+        RedisModule_CloseKey(key); // Docs says safe to call on null
+        
         return refT;
     }
     
@@ -87,36 +97,6 @@ namespace KeyValUtil
 
         return REDISMODULE_OK;
     }
-    
-    template<typename T, std::size_t ReqArgCt>
-    std::function<int(RedisModuleCtx*, RedisModuleString**, int)> getCommandFunction(UserKey_CB<T> func, RedisModuleType *modType)
-    {
-        std::function<int(RedisModuleCtx*, RedisModuleString**, int)> redis_func = 
-        [func, modType](RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
-        {
-            return runCommand<T, ReqArgCt>(ctx, argv, argc, modType, func);
-        };
-        
-        return redis_func;
-    }
-    
-    
-    
-    
-    
-        /*template<typename T, std::size_t ReqArgCt>
-        RedisModuleCmdFunc makeCommand(UserKey_CB<T> func, RedisModuleType *modType)
-        {
-            
-            RedisModuleCmdFunc redis_func = [&](RedisModuleCtx *ctx, RedisModuleString **argv, int argc)
-            {
-                T *refT = fetchValue<T, ReqArgCt>(ctx, argv, argc, modType);
-                //func(ctx, argv, argc, refT);
-                return REDISMODULE_OK;
-            };
-            
-            return redis_func;
-        }*/
 }
 
 
